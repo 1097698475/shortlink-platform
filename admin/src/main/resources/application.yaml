@@ -4,16 +4,27 @@ server:
 spring:
   application:
     name: short-link-admin
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.yaml
   datasource:
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
     url: jdbc:shardingsphere:classpath:shardingsphere-config-${database.env:dev}.yaml
   data:
     redis:
-      host: 127.0.0.1
-      port: 6379
+      sentinel:
+        master: mymaster
+        nodes:
+          - 127.0.0.1:26379
+          - 127.0.0.1:26380
+          - 127.0.0.1:26381
       password: 123456
   cloud:
     nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
       discovery:
         server-addr: 127.0.0.1:8848
 

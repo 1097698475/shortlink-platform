@@ -1,0 +1,112 @@
+services:
+  redis-master:
+    image: redis:latest
+    container_name: shortlink-redis-master
+    command:
+      - redis-server
+      - --port
+      - "6379"
+      - --requirepass
+      - "123456"
+      - --masterauth
+      - "123456"
+      - --appendonly
+      - "yes"
+    ports:
+      - "6380:6379"
+    networks:
+      - shortlink-redis
+
+  redis-replica-1:
+    image: redis:latest
+    container_name: shortlink-redis-replica-1
+    depends_on:
+      - redis-master
+    command:
+      - redis-server
+      - --port
+      - "6379"
+      - --replicaof
+      - redis-master
+      - "6379"
+      - --requirepass
+      - "123456"
+      - --masterauth
+      - "123456"
+      - --appendonly
+      - "yes"
+      - --replica-announce-ip
+      - 127.0.0.1
+      - --replica-announce-port
+      - "6381"
+    ports:
+      - "6381:6379"
+    networks:
+      - shortlink-redis
+
+  redis-replica-2:
+    image: redis:latest
+    container_name: shortlink-redis-replica-2
+    depends_on:
+      - redis-master
+    command:
+      - redis-server
+      - --port
+      - "6379"
+      - --replicaof
+      - redis-master
+      - "6379"
+      - --requirepass
+      - "123456"
+      - --masterauth
+      - "123456"
+      - --appendonly
+      - "yes"
+      - --replica-announce-ip
+      - 127.0.0.1
+      - --replica-announce-port
+      - "6382"
+    ports:
+      - "6382:6379"
+    networks:
+      - shortlink-redis
+
+  redis-sentinel-1:
+    image: redis:latest
+    container_name: shortlink-redis-sentinel-1
+    depends_on:
+      - redis-master
+      - redis-replica-1
+      - redis-replica-2
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    network_mode: host
+    volumes:
+      - ./conf/sentinel-1.conf:/usr/local/etc/redis/sentinel.conf
+
+  redis-sentinel-2:
+    image: redis:latest
+    container_name: shortlink-redis-sentinel-2
+    depends_on:
+      - redis-master
+      - redis-replica-1
+      - redis-replica-2
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    network_mode: host
+    volumes:
+      - ./conf/sentinel-2.conf:/usr/local/etc/redis/sentinel.conf
+
+  redis-sentinel-3:
+    image: redis:latest
+    container_name: shortlink-redis-sentinel-3
+    depends_on:
+      - redis-master
+      - redis-replica-1
+      - redis-replica-2
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    network_mode: host
+    volumes:
+      - ./conf/sentinel-3.conf:/usr/local/etc/redis/sentinel.conf
+
+networks:
+  shortlink-redis:
+    name: shortlink-redis
