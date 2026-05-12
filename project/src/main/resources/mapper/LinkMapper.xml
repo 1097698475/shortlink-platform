@@ -17,7 +17,7 @@
   -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nageoffer.shortlink.project.dao.mapper.ShortLinkMapper">
+<mapper namespace="com.lin1473.shortlink.project.dao.mapper.ShortLinkMapper">
 
     <!-- 自增短链接访问次数 -->
     <update id="incrementStats">
@@ -30,8 +30,8 @@
     </update>
 
     <!-- 分页查询短链接 -->
-    <select id="pageLink" parameterType="com.nageoffer.shortlink.project.dto.req.ShortLinkPageReqDTO"
-            resultType="com.nageoffer.shortlink.project.dao.entity.ShortLinkDO">
+    <select id="pageLink" parameterType="com.lin1473.shortlink.project.dto.req.ShortLinkPageReqDTO"
+            resultType="com.lin1473.shortlink.project.dao.entity.ShortLinkDO">
         SELECT t.*,
         COALESCE(s.today_pv, 0) AS todayPv,
         COALESCE(s.today_uv, 0) AS todayUv,
@@ -69,8 +69,8 @@
 
     <!-- 分页统计回收站短链接 -->
     <select id="pageRecycleBinLink"
-            parameterType="com.nageoffer.shortlink.project.dto.req.ShortLinkRecycleBinPageReqDTO"
-            resultType="com.nageoffer.shortlink.project.dao.entity.ShortLinkDO">
+            parameterType="com.lin1473.shortlink.project.dto.req.ShortLinkRecycleBinPageReqDTO"
+            resultType="com.lin1473.shortlink.project.dao.entity.ShortLinkDO">
         SELECT t.*,
         COALESCE(s.today_pv, 0) AS todayPv,
         COALESCE(s.today_uv, 0) AS todayUv,

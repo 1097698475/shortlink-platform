@@ -4,8 +4,9 @@ spring:
   application:
     name: short-link-gateway
   profiles:
-    active: aggregation
-    # active: dev
+    # aggregation 为单体聚合部署模式；dev 使用 gateway + admin + project 独立服务模式
+    active: dev
+    # active: aggregation
   data:
     redis:
       host: 127.0.0.1

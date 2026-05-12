@@ -19,3 +19,13 @@ spring:
             - Path=/api/short-link/**
           filters:
             - name: TokenValidate
+
+        - id: short-link-restore
+          uri: lb://short-link-project
+          predicates:
+            - Path=/{short-uri}
+
+        - id: short-link-project-page
+          uri: lb://short-link-project
+          predicates:
+            - Path=/page/**

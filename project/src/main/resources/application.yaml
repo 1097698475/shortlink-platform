@@ -24,15 +24,19 @@ spring:
 short-link:
   domain:
     default: nurl.ink:8001
+  goto-lock:
+    # 获取跳转锁的最大等待时间（ms）
+    # 需 >= P99(DB 查询 + 写 Redis) 持锁耗时，通过日志监控后调整，无需重新部署
+    # 初始保守值 200ms；若 DB 稳定且 P99 持锁 < 30ms，可调低至 60ms
+    wait-millis: 200
   stats:
     locale:
       amap-key: 824c511f0997586ea016f979fdb23087
   goto-domain:
     white-list:
       enable: true
-      names: '拿个offer,知乎,掘金,博客园'
+      names: '知乎,掘金,博客园'
       details:
-        - nageoffer.com
         - zhihu.com
         - juejin.cn
         - cnblogs.com
@@ -41,3 +45,15 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mapper/*.xml
+
+# [新增] RocketMQ 配置，替换原 Redis Stream 统计消息队列
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    # [新增] 生产者组
+    group: short-link_prod-stats-gid
+    # [新增] Topic，消费者通过 ${rocketmq.producer.topic} 引用
+    topic: short-link-stats
+  consumer:
+    # [新增] 消费者组，对应 @RocketMQMessageListener(consumerGroup)
+    group: short-link_coms-stats-gid
